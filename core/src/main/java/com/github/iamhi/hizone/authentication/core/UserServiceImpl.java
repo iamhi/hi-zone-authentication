@@ -7,17 +7,20 @@ import com.github.iamhi.hizone.authentication.core.models.UserDTO;
 import com.github.iamhi.hizone.authentication.core.models.UserRoleEnum;
 import com.github.iamhi.hizone.authentication.data.UserEntity;
 import com.github.iamhi.hizone.authentication.data.UserRepository;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple3;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public record UserServiceImpl(
     UserRepository userRepository,
     PasswordService passwordService,
     AdminConfig adminConfig
 ) implements UserService {
+
     @Override
     public Mono<UserDTO> createUser(String username, String password, String email) {
         return userRepository.save(new UserEntity(
@@ -49,6 +52,11 @@ public record UserServiceImpl(
             isValidBuildTimeSecret(buildTimeSecret),
             Mono.just(username)
         ).flatMap(this::validateAndAddAdminRole);
+    }
+
+    @Override
+    public Mono<Boolean> hasRole(String username, String role) {
+        return userRepository().findByUsername(username).map(UserEntity::roles).map(roles -> roles.contains(role));
     }
 
     private Mono<Boolean> isValidOtk(String otk) {

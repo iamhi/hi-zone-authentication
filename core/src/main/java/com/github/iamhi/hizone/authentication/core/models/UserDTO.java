@@ -17,9 +17,9 @@ public record UserDTO(
     public static UserDTO fromEntity(UserEntity userEntity) {
         return new UserDTO(
             userEntity.uuid(),
+            userEntity.username(),
             userEntity.email(),
-            userEntity.email(),
-            userEntity.roles().stream().map(UserRoleEnum::valueOf).collect(Collectors.toList())
+            userEntity.roles().stream().map(UserRoleEnum::valueOf).toList()
         );
     }
 }

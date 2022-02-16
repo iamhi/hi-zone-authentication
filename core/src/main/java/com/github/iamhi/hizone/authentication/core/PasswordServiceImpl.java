@@ -3,8 +3,10 @@ package com.github.iamhi.hizone.authentication.core;
 import com.github.iamhi.hizone.authentication.core.exceptions.UserNotFoundThrowable;
 import com.github.iamhi.hizone.authentication.data.UserEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+@Service
 record PasswordServiceImpl(
     BCryptPasswordEncoder bCryptPasswordEncoder
 ) implements PasswordService {
