@@ -22,5 +22,10 @@
             <artifactId>authentication-data</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.iamhi.hizone</groupId>
+            <artifactId>authentication-config</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
