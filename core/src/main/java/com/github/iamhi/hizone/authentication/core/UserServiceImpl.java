@@ -34,7 +34,7 @@ public record UserServiceImpl(
 
     @Override
     public Mono<UserDTO> findUser(String uuid) {
-        return null;
+        return userRepository.findById(uuid).map(UserDTO::fromEntity);
     }
 
     @Override
@@ -73,6 +73,7 @@ public record UserServiceImpl(
             return userRepository
                 .findByUsername(tuple3.getT3())
                 .map(userEntity -> userEntity.addRole(UserRoleEnum.ADMIN.name()))
+                .flatMap(userRepository::save)
                 .map(UserDTO::fromEntity);
         }
 

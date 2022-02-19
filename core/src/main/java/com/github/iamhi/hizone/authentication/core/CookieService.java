@@ -22,6 +22,8 @@ public interface CookieService {
 
     Mono<UserDTO> getUserFromAccessToken(MultiValueMap<String, HttpCookie> cookies);
 
+    Mono<String> getRefreshToken(MultiValueMap<String, HttpCookie> cookies);
+
     Mono<ResponseCookie> createExpiredRefreshCookie();
 
     Mono<ResponseCookie> createExpiredAccessCookie();

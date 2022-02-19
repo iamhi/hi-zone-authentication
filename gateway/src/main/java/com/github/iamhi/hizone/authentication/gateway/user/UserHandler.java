@@ -1,10 +1,13 @@
 package com.github.iamhi.hizone.authentication.gateway.user;
 
+import com.github.iamhi.hizone.authentication.api.requests.AddAdminRoleRequest;
 import com.github.iamhi.hizone.authentication.api.requests.CreateUserRequest;
 import com.github.iamhi.hizone.authentication.api.requests.LoginUserRequest;
+import com.github.iamhi.hizone.authentication.api.responses.AddAdminRoleResponse;
 import com.github.iamhi.hizone.authentication.api.responses.CreateUserDeniedResponse;
 import com.github.iamhi.hizone.authentication.api.responses.LoginDeniedResponse;
 import com.github.iamhi.hizone.authentication.api.responses.UserResponse;
+import com.github.iamhi.hizone.authentication.core.CookieService;
 import com.github.iamhi.hizone.authentication.core.UserService;
 import com.github.iamhi.hizone.authentication.core.exceptions.UserNotFoundThrowable;
 import com.github.iamhi.hizone.authentication.core.models.UserDTO;
@@ -17,9 +20,12 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.stream.Collectors;
+
 @Component
 public record UserHandler(
     UserService userService,
+    CookieService cookieService,
     SharedCookieHelper sharedCookieHelper
 ) {
     public Mono<ServerResponse> create(ServerRequest serverRequest) {
@@ -42,13 +48,31 @@ public record UserHandler(
     }
 
     public Mono<ServerResponse> me(ServerRequest serverRequest) {
-        // This needs to implemented after tokens
-        return ServerResponse.ok().bodyValue("OK");
+        return cookieService.getUserFromAccessToken(serverRequest.cookies()).map(userDTO -> new UserResponse(
+            userDTO.uuid(),
+            userDTO.username(),
+            userDTO.email()
+        )).flatMap(userResponse -> ServerResponse.ok().bodyValue(userResponse));
     }
 
     public Mono<ServerResponse> addAdminRole(ServerRequest serverRequest) {
-        // This needs to implemented after tokens
-        return ServerResponse.ok().bodyValue("OK");
+        return Mono.zip(
+                serverRequest.bodyToMono(AddAdminRoleRequest.class),
+                cookieService.getUserFromAccessToken(serverRequest.cookies())
+            ).flatMap(requestTuple ->
+                userService.addAdminRole(
+                    requestTuple.getT2().username(),
+                    requestTuple.getT1().otk(),
+                    requestTuple.getT1().buildTimeSecret()))
+            .flatMap(userDTO ->
+                ServerResponse.ok().bodyValue(new AddAdminRoleResponse(
+                    userDTO.roles().stream().map(Enum::name).collect(Collectors.toList())
+                )));
+    }
+
+    public Mono<ServerResponse> logout(ServerRequest serverRequest) {
+        return invalidateCookies(ServerResponse.ok(), serverRequest)
+            .flatMap(ServerResponse.HeadersBuilder::build);
     }
 
     private Mono<ServerResponse> loginSuccessful(UserDTO userDTO) {
@@ -72,7 +96,6 @@ public record UserHandler(
                 .flatMap(bodyBuilder -> bodyBuilder.bodyValue(new CreateUserDeniedResponse()));
         }
 
-
         return invalidateCookies(
             ServerResponse
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -80,14 +103,21 @@ public record UserHandler(
                 ), serverRequest).flatMap(ServerResponse.BodyBuilder::build);
     }
 
+    public Mono<ServerResponse> refreshAccessToken(ServerRequest serverRequest) {
+        return addNewAccessCookie(ServerResponse.ok(), serverRequest).flatMap(ServerResponse.BodyBuilder::build);
+    }
+
+    private Mono<ServerResponse.BodyBuilder> addNewAccessCookie(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest) {
+        return sharedCookieHelper.refreshAccessToken(responseBuilder, serverRequest);
+    }
 
     private Mono<ServerResponse.BodyBuilder> addNewCookies(ServerResponse.BodyBuilder responseBuilder, UserDTO userDTO) {
         return sharedCookieHelper.addNewCookies(responseBuilder, userDTO);
     }
 
-//    private Mono<ServerResponse.BodyBuilder> addCookieFromRefresh(ServerResponse.BodyBuilder responseBuilder) {
-//        return sharedCookieHelper.invalidateCookies(responseBuilder);
-//    }
+    private Mono<ServerResponse.BodyBuilder> addCookieFromRefresh(ServerResponse.BodyBuilder responseBuilder, String refreshToken) {
+        return sharedCookieHelper.addCookieFromRefresh(responseBuilder, refreshToken);
+    }
 
     private Mono<ServerResponse.BodyBuilder> invalidateCookies(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest) {
         return sharedCookieHelper.invalidateCookies(responseBuilder, serverRequest);

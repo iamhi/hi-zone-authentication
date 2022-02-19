@@ -22,7 +22,9 @@ public record UserEntity(
     List<String> roles
 ) {
     public UserEntity addRole(String role) {
-        roles.add(role);
+        if (!roles.contains(role)) {
+            roles.add(role);
+        }
 
         return new UserEntity(
             uuid,

@@ -64,6 +64,11 @@ public record CookieServiceImpl(
     }
 
     @Override
+    public Mono<String> getRefreshToken(MultiValueMap<String, HttpCookie> cookies) {
+        return Mono.justOrEmpty(cookies.getFirst(ACCESS_TOKEN_COOKIE_NAME)).map(HttpCookie::getValue);
+    }
+
+    @Override
     public Mono<ResponseCookie> createExpiredRefreshCookie() {
         return Mono.just(invalidateCookie(REFRESH_TOKEN_COOKIE_NAME, cookieConfig.getRefreshTokenPath()));
     }

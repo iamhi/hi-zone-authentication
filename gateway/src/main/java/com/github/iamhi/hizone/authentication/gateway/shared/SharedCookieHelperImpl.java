@@ -4,7 +4,6 @@ import com.github.iamhi.hizone.authentication.core.CookieService;
 import com.github.iamhi.hizone.authentication.core.TokenService;
 import com.github.iamhi.hizone.authentication.core.models.UserDTO;
 import org.springframework.http.HttpCookie;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -29,7 +28,7 @@ record SharedCookieHelperImpl(
 
     @Override
     public Mono<ServerResponse.BodyBuilder> addCookieFromRefresh(ServerResponse.BodyBuilder responseBuilder, String refreshToken) {
-        return cookieService.createRefreshCookie(refreshToken).map(responseBuilder::cookie);
+        return cookieService.createAccessCookie(refreshToken).map(responseBuilder::cookie);
     }
 
     @Override
@@ -42,6 +41,13 @@ record SharedCookieHelperImpl(
             .map(cookieTuple -> responseBuilder
                 .cookie(cookieTuple.getT1())
                 .cookie(cookieTuple.getT2()));
+    }
+
+    @Override
+    public Mono<ServerResponse.BodyBuilder> refreshAccessToken(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest) {
+        return cookieService()
+            .getRefreshToken(serverRequest.cookies())
+            .flatMap(cookieService::createAccessCookie).map(responseBuilder::cookie);
     }
 
     public void invalidateTokens(MultiValueMap<String, HttpCookie> cookies) {
