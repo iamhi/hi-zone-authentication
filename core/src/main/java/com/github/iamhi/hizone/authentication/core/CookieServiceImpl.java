@@ -64,13 +64,13 @@ public record CookieServiceImpl(
     }
 
     @Override
-    public ResponseCookie createExpiredRefreshCookie() {
-        return invalidateCookie(REFRESH_TOKEN_COOKIE_NAME, cookieConfig.getRefreshTokenPath());
+    public Mono<ResponseCookie> createExpiredRefreshCookie() {
+        return Mono.just(invalidateCookie(REFRESH_TOKEN_COOKIE_NAME, cookieConfig.getRefreshTokenPath()));
     }
 
     @Override
-    public ResponseCookie createExpiredAccessCookie() {
-        return invalidateCookie(ACCESS_TOKEN_COOKIE_NAME, cookieConfig.getAccessTokenPath());
+    public Mono<ResponseCookie> createExpiredAccessCookie() {
+        return Mono.just(invalidateCookie(ACCESS_TOKEN_COOKIE_NAME, cookieConfig.getAccessTokenPath()));
     }
 
     private String getUserUuidFromClaims(Claims claims) {

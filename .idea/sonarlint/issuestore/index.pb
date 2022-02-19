@@ -35,10 +35,6 @@ jservice/src/main/java/com/github/iamhi/hizone/authentication/service/Authentica
 _api/src/main/java/com/github/iamhi/hizone/authentication/api/responses/LoginDeniedResponse.java,c/e/ce71338fd7fbb935a511f83930bb1ff165a6328e
 ‹
 [api/src/main/java/com/github/iamhi/hizone/authentication/api/requests/LoginUserRequest.java,b/3/b313a2909083ad93a6668fbed8c6018d4a1ecd52
-Š
-Zgateway/src/main/java/com/github/iamhi/hizone/authentication/gateway/user/UserHandler.java,3/0/30c1674810e99a15f784f6b69cc4be21a7311ebb
-‰
-Ygateway/src/main/java/com/github/iamhi/hizone/authentication/gateway/user/UserRouter.java,d/0/d0146541029562a48e2aac7f243787fe4c76d3a3
 ˆ
 Xapi/src/main/java/com/github/iamhi/hizone/authentication/api/responses/UserResponse.java,9/6/96796db43ee74c6d78fcdbf20ca7e429fa8f1444
 ~
@@ -51,3 +47,5 @@ Score/src/main/java/com/github/iamhi/hizone/authentication/core/UserServiceImpl.
 Wcore/src/main/java/com/github/iamhi/hizone/authentication/core/PasswordServiceImpl.java,1/e/1e02560cbf3321499f539e2b961d2c83169d19f9
 ”
 dapi/src/main/java/com/github/iamhi/hizone/authentication/api/responses/CreateUserDeniedResponse.java,d/8/d89dccadba1e1f52101003a57fa66bab1f00b8e0
+
+Ocore/src/main/java/com/github/iamhi/hizone/authentication/core/UserService.java,e/6/e63cda8696ad78dc085ec76f5e6062ee558d66c3

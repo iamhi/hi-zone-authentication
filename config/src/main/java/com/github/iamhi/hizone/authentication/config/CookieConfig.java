@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties("authentication.service.admin")
+@ConfigurationProperties("authentication.service.cookie")
 @ConstructorBinding
 @Data
 public class CookieConfig {

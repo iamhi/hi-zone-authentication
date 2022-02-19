@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -30,16 +31,18 @@ public record TokenServiceImpl(
     }
 
     @Override
-    public Mono<String> invalidateToken(String token) {
+    public void invalidateToken(String token) {
         // remove from redis
         // remove from mongodb
         // return OK
-        return null;
+        // return Mono.just("ok");
+
+        System.out.println("Invalidating token: " + token);
     }
 
     private String encodeRefreshToken(Map<String, Object> payload, long lifeTime) {
         return Jwts.builder()
-            .setClaims(payload)
+            .setClaims(new HashMap<>(payload))
             .setSubject(payload.get("uuid").toString())
             .setExpiration(new Date(Instant.now().toEpochMilli() + lifeTime))
             .signWith(SignatureAlgorithm.HS256, tokenConfig.getTokenSecret())

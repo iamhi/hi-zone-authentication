@@ -22,7 +22,7 @@ public interface CookieService {
 
     Mono<UserDTO> getUserFromAccessToken(MultiValueMap<String, HttpCookie> cookies);
 
-    ResponseCookie createExpiredRefreshCookie();
+    Mono<ResponseCookie> createExpiredRefreshCookie();
 
-    ResponseCookie createExpiredAccessCookie();
+    Mono<ResponseCookie> createExpiredAccessCookie();
 }
