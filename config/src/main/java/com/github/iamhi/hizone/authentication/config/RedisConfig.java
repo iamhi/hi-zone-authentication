@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties("spring.redis")
-@ConstructorBinding
+//@ConstructorBinding
 @Data
 public class RedisConfig {
 

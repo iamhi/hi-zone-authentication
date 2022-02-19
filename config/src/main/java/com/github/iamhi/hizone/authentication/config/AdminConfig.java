@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "authentication.service.admin")
-@ConstructorBinding
+//@ConstructorBinding
 @Data
 public class AdminConfig {
 

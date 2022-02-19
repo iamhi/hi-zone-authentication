@@ -115,10 +115,6 @@ public record UserHandler(
         return sharedCookieHelper.addNewCookies(responseBuilder, userDTO);
     }
 
-    private Mono<ServerResponse.BodyBuilder> addCookieFromRefresh(ServerResponse.BodyBuilder responseBuilder, String refreshToken) {
-        return sharedCookieHelper.addCookieFromRefresh(responseBuilder, refreshToken);
-    }
-
     private Mono<ServerResponse.BodyBuilder> invalidateCookies(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest) {
         return sharedCookieHelper.invalidateCookies(responseBuilder, serverRequest);
     }

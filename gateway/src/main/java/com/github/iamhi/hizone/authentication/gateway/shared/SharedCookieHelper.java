@@ -9,8 +9,6 @@ public interface SharedCookieHelper {
 
     Mono<ServerResponse.BodyBuilder> addNewCookies(ServerResponse.BodyBuilder responseBuilder, UserDTO userDTO);
 
-    Mono<ServerResponse.BodyBuilder> addCookieFromRefresh(ServerResponse.BodyBuilder responseBuilder, String refreshToken);
-
     Mono<ServerResponse.BodyBuilder> invalidateCookies(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest);
 
     Mono<ServerResponse.BodyBuilder> refreshAccessToken(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest);

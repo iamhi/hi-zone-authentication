@@ -16,4 +16,8 @@ public interface TokenService {
     Mono<Claims> decodeToken(String token);
 
     void invalidateToken(String token);
+
+    Mono<String> validateToken(String token);
+
+    Mono<String> extendToken(String token, long lifeTime);
 }

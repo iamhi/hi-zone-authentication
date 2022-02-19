@@ -48,14 +48,6 @@ public record CookieServiceImpl(
     }
 
     @Override
-    public Mono<ResponseCookie> createRefreshCookie(String refreshToken) {
-        return tokenService.decodeToken(refreshToken)
-            .map(this::getUserUuidFromClaims)
-            .flatMap(userService::findUser)
-            .flatMap(this::createRefreshCookie);
-    }
-
-    @Override
     public Mono<UserDTO> getUserFromAccessToken(MultiValueMap<String, HttpCookie> cookies) {
         return Mono.justOrEmpty(cookies.getFirst(ACCESS_TOKEN_COOKIE_NAME))
             .map(HttpCookie::getValue).flatMap(tokenService()::decodeToken)

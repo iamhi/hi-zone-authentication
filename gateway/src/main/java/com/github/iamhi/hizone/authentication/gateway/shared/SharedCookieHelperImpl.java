@@ -1,5 +1,6 @@
 package com.github.iamhi.hizone.authentication.gateway.shared;
 
+import com.github.iamhi.hizone.authentication.config.TokenConfig;
 import com.github.iamhi.hizone.authentication.core.CookieService;
 import com.github.iamhi.hizone.authentication.core.TokenService;
 import com.github.iamhi.hizone.authentication.core.models.UserDTO;
@@ -15,7 +16,8 @@ import java.util.List;
 @Component
 record SharedCookieHelperImpl(
     TokenService tokenService,
-    CookieService cookieService
+    CookieService cookieService,
+    TokenConfig tokenConfig
 ) implements SharedCookieHelper {
 
     @Override
@@ -24,11 +26,6 @@ record SharedCookieHelperImpl(
             cookieService.createAccessCookie(userDTO),
             cookieService.createRefreshCookie(userDTO)
         ).map(cookiesTuple -> responseBuilder.cookie(cookiesTuple.getT1()).cookie(cookiesTuple.getT2()));
-    }
-
-    @Override
-    public Mono<ServerResponse.BodyBuilder> addCookieFromRefresh(ServerResponse.BodyBuilder responseBuilder, String refreshToken) {
-        return cookieService.createAccessCookie(refreshToken).map(responseBuilder::cookie);
     }
 
     @Override
@@ -45,8 +42,11 @@ record SharedCookieHelperImpl(
 
     @Override
     public Mono<ServerResponse.BodyBuilder> refreshAccessToken(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest) {
+        // TODO: extend refresh token expiration date maybe?
         return cookieService()
             .getRefreshToken(serverRequest.cookies())
+            .flatMap(tokenService::validateToken)
+            .flatMap(refreshToken -> tokenService.extendToken(refreshToken, tokenConfig.getRefreshTokenLife()))
             .flatMap(cookieService::createAccessCookie).map(responseBuilder::cookie);
     }
 

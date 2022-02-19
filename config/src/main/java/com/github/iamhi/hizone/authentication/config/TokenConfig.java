@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties("authentication.service.token")
-@ConstructorBinding
+//@ConstructorBinding
 @Data
 public class TokenConfig {
 
