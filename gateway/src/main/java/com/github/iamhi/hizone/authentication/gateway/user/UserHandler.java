@@ -51,7 +51,8 @@ public record UserHandler(
         return cookieService.getUserFromAccessToken(serverRequest.cookies()).map(userDTO -> new UserResponse(
             userDTO.uuid(),
             userDTO.username(),
-            userDTO.email()
+            userDTO.email(),
+            userDTO.roles().stream().map(Enum::name).toList()
         )).flatMap(userResponse -> ServerResponse.ok().bodyValue(userResponse));
     }
 
@@ -66,7 +67,7 @@ public record UserHandler(
                     requestTuple.getT1().buildTimeSecret()))
             .flatMap(userDTO ->
                 ServerResponse.ok().bodyValue(new AddAdminRoleResponse(
-                    userDTO.roles().stream().map(Enum::name).collect(Collectors.toList())
+                    userDTO.roles().stream().map(Enum::name).toList()
                 )));
     }
 
@@ -81,7 +82,8 @@ public record UserHandler(
                 .bodyValue(new UserResponse(
                     userDTO.uuid(),
                     userDTO.username(),
-                    userDTO.email()
+                    userDTO.email(),
+                    userDTO.roles().stream().map(Enum::name).toList()
                 )));
     }
 
