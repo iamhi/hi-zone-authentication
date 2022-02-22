@@ -15,7 +15,7 @@ import static com.github.iamhi.hizone.authentication.core.TokenService.ACCESS_TO
 import static com.github.iamhi.hizone.authentication.core.TokenService.REFRESH_TOKEN_EXPIRATION;
 
 @Service
-public record CookieServiceImpl(
+record CookieServiceImpl(
     UserService userService,
     TokenService tokenService,
     CookieConfig cookieConfig

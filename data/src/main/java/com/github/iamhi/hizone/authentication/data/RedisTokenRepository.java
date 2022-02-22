@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
-public record RedisTokenRepository(
+record RedisTokenRepository(
     RedisRepository redisRepository
 ) implements TokenRepository {
 

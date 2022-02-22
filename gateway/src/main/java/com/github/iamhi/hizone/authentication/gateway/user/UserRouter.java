@@ -25,7 +25,7 @@ public class UserRouter {
     @Bean
     public RouterFunction<ServerResponse> userRouterCompose(UserHandler userHandler) {
         return route(POST(CREATE_ROUTE).and(accept(MediaType.APPLICATION_JSON)), userHandler::create)
-            .and(route(POST(LOGIN_ROUTE).and(accept(MediaType.APPLICATION_JSON)), userHandler::login))
+            .and(route(POST(LOGIN_ROUTE).and(accept(MediaType.APPLICATION_JSON).or(accept(MediaType.MULTIPART_FORM_DATA))), userHandler::login))
             .and(route(PUT(LOGOUT_ROUTE), userHandler::logout))
             .and(route(POST(REFRESH_ACCESS_TOKEN), userHandler::refreshAccessToken))
             .and(route(GET(ME_ROUTE), userHandler::me))

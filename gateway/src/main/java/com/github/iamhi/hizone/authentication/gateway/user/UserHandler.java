@@ -16,11 +16,12 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.stream.Collectors;
+import java.net.URI;
 
 @Component
 public record UserHandler(
@@ -41,7 +42,10 @@ public record UserHandler(
     }
 
     public Mono<ServerResponse> login(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(LoginUserRequest.class).flatMap(
+        return serverRequest
+            .formData().flatMap(formData -> formData.isEmpty() ? Mono.empty() : Mono.just(formData))
+            .map(LoginUserRequest::fromFormData)
+            .switchIfEmpty(serverRequest.bodyToMono(LoginUserRequest.class)).flatMap(
                 loginRequest -> userService.userLogin(loginRequest.username(), loginRequest.password()))
             .flatMap(this::loginSuccessful)
             .onErrorResume(throwable -> this.loginDenied(throwable, serverRequest));

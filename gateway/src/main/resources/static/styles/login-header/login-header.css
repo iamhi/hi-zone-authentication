@@ -1,0 +1,19 @@
+.login-header {
+  text-align: center;
+  height: min-content;
+}
+
+.login-header__title {
+		padding-bottom: 0.10em;
+		font-size: 4em;
+		font-weight: bold;
+		width: 100%;
+		margin: 0em;
+		margin-top: 0.5em;
+}
+
+.login-header__subtitle {
+		padding-bottom: 1em;
+		font-size: 2em;
+		margin: 0;
+}

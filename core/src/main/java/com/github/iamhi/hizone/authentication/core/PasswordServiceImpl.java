@@ -11,7 +11,7 @@ record PasswordServiceImpl(
     BCryptPasswordEncoder bCryptPasswordEncoder
 ) implements PasswordService {
 
-    public PasswordServiceImpl() {
+    PasswordServiceImpl() {
         this(new BCryptPasswordEncoder());
     }
 

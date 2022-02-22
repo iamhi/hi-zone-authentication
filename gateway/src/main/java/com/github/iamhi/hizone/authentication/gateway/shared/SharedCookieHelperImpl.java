@@ -42,7 +42,6 @@ record SharedCookieHelperImpl(
 
     @Override
     public Mono<ServerResponse.BodyBuilder> refreshAccessToken(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest) {
-        // TODO: extend refresh token expiration date maybe?
         return cookieService()
             .getRefreshToken(serverRequest.cookies())
             .flatMap(tokenService::validateToken)

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public record UserServiceImpl(
+record UserServiceImpl(
     UserRepository userRepository,
     PasswordService passwordService,
     AdminConfig adminConfig

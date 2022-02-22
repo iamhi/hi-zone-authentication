@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
-public class RedisClientWrapper implements RedisRepository, RedisPubSubWrapper {
+class RedisClientWrapper implements RedisRepository, RedisPubSubWrapper {
 
     RedisReactiveCommands<String, String> reactiveCommands;
 

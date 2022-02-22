@@ -35,8 +35,6 @@ public record TokenServiceImpl(
     @Override
     public void invalidateToken(String token) {
         tokenRepository.deleteToken(token).block();
-
-        System.out.println("Invalidating token: " + token);
     }
 
     @Override

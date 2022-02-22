@@ -8,9 +8,9 @@ import reactor.core.publisher.Mono;
 
 public interface CookieService {
 
-    String ACCESS_TOKEN_COOKIE_NAME = "messaging-club-access-token";
+    String ACCESS_TOKEN_COOKIE_NAME = "hi-zone-access-token";
 
-    String REFRESH_TOKEN_COOKIE_NAME = "messaging-club-refresh-token";
+    String REFRESH_TOKEN_COOKIE_NAME = "hi-zone-refresh-token";
 
     Mono<ResponseCookie> createAccessCookie(UserDTO userDTO);
 
