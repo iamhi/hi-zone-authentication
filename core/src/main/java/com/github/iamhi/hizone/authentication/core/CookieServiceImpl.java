@@ -3,6 +3,7 @@ package com.github.iamhi.hizone.authentication.core;
 import com.github.iamhi.hizone.authentication.config.CookieConfig;
 import com.github.iamhi.hizone.authentication.core.models.UserDTO;
 import io.jsonwebtoken.Claims;
+import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
@@ -102,8 +103,8 @@ record CookieServiceImpl(
 
     private ResponseCookie createCookie(String name, String value, String path, long maxAge) {
         return ResponseCookie.from(name, value)
-//            .sameSite(Cookie.SameSite.STRICT.attributeValue())
-//            .httpOnly(true)
+            .secure(true)
+            .httpOnly(true)
             .path(path)
             .maxAge(maxAge)
             .build();

@@ -17,6 +17,7 @@ public class WebConfig {
         corsConfig.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8081"));
         corsConfig.setMaxAge(8000L);
         corsConfig.addAllowedMethod("GET");
+        corsConfig.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 

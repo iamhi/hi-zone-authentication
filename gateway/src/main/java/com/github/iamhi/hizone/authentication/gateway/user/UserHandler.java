@@ -81,7 +81,7 @@ public record UserHandler(
     }
 
     private Mono<ServerResponse> loginSuccessful(UserDTO userDTO) {
-        return addNewCookies(ServerResponse.ok(), userDTO)
+        return addNewCookies(ServerResponse.seeOther(URI.create("http://localhost:3000")), userDTO)
             .flatMap(bodyBuilder -> bodyBuilder
                 .bodyValue(new UserResponse(
                     userDTO.uuid(),
