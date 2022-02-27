@@ -5,7 +5,8 @@ import java.util.Objects;
 public record CreateUserRequest(
     String username,
     String password,
-    String email
+    String email,
+    boolean preventRedirect
 ) {
 
     public CreateUserRequest {

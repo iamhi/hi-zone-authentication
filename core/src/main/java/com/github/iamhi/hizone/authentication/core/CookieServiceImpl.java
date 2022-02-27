@@ -103,8 +103,8 @@ record CookieServiceImpl(
 
     private ResponseCookie createCookie(String name, String value, String path, long maxAge) {
         return ResponseCookie.from(name, value)
-            .secure(true)
-            .httpOnly(true)
+//            .secure(true)
+//            .httpOnly(true)
             .path(path)
             .maxAge(maxAge)
             .build();

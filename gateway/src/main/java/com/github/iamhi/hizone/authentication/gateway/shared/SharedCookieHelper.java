@@ -12,4 +12,6 @@ public interface SharedCookieHelper {
     Mono<ServerResponse.BodyBuilder> invalidateCookies(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest);
 
     Mono<ServerResponse.BodyBuilder> refreshAccessToken(ServerResponse.BodyBuilder responseBuilder, ServerRequest serverRequest);
+
+    Mono<Boolean> isRole(ServerRequest serverRequest, String role);
 }

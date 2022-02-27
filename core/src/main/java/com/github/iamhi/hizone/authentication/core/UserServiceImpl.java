@@ -59,6 +59,15 @@ record UserServiceImpl(
         return userRepository().findByUsername(username).map(UserEntity::roles).map(roles -> roles.contains(role));
     }
 
+    @Override
+    public Mono<Boolean> addRole(String username, String role) {
+        return userRepository()
+            .findByUsername(username)
+            .map(userEntity -> userEntity.addRole(UserRoleEnum.valueOf(role).name()))
+            .flatMap(userRepository::save)
+            .map(userEntity -> userEntity.roles().contains(role));
+    }
+
     private Mono<Boolean> isValidOtk(String otk) {
         // TOO lazy to implement this yet :D
         return Mono.just(true);

@@ -16,10 +16,10 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.net.URI;
 
@@ -32,10 +32,13 @@ public record UserHandler(
     public Mono<ServerResponse> create(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CreateUserRequest.class)
             .flatMap(createUserRequest ->
-                userService.createUser(
-                    createUserRequest.username(),
-                    createUserRequest.password(),
-                    createUserRequest.email()
+                Mono.zip(
+                    userService.createUser(
+                        createUserRequest.username(),
+                        createUserRequest.password(),
+                        createUserRequest.email()
+                    ),
+                    Mono.just(createUserRequest.preventRedirect())
                 ))
             .flatMap(this::loginSuccessful)
             .onErrorResume(throwable -> this.loginDenied(throwable, serverRequest));
@@ -46,7 +49,10 @@ public record UserHandler(
             .formData().flatMap(formData -> formData.isEmpty() ? Mono.empty() : Mono.just(formData))
             .map(LoginUserRequest::fromFormData)
             .switchIfEmpty(serverRequest.bodyToMono(LoginUserRequest.class)).flatMap(
-                loginRequest -> userService.userLogin(loginRequest.username(), loginRequest.password()))
+                loginRequest -> Mono.zip(
+                    userService.userLogin(loginRequest.username(), loginRequest.password()),
+                    Mono.just(loginRequest.preventRedirect())
+                ))
             .flatMap(this::loginSuccessful)
             .onErrorResume(throwable -> this.loginDenied(throwable, serverRequest));
     }
@@ -80,7 +86,20 @@ public record UserHandler(
             .flatMap(ServerResponse.HeadersBuilder::build);
     }
 
-    private Mono<ServerResponse> loginSuccessful(UserDTO userDTO) {
+    private Mono<ServerResponse> loginSuccessful(Tuple2<UserDTO, Boolean> tuple2) {
+        UserDTO userDTO = tuple2.getT1();
+
+        if (Boolean.TRUE.equals(tuple2.getT2())) {
+            return addNewCookies(ServerResponse.ok(), userDTO)
+                .flatMap(bodyBuilder -> bodyBuilder
+                    .bodyValue(new UserResponse(
+                        userDTO.uuid(),
+                        userDTO.username(),
+                        userDTO.email(),
+                        userDTO.roles().stream().map(Enum::name).toList()
+                    )));
+        }
+
         return addNewCookies(ServerResponse.seeOther(URI.create("http://localhost:3000")), userDTO)
             .flatMap(bodyBuilder -> bodyBuilder
                 .bodyValue(new UserResponse(
@@ -93,8 +112,8 @@ public record UserHandler(
 
     private Mono<ServerResponse> loginDenied(Throwable throwable, ServerRequest serverRequest) {
         if (throwable.getClass().equals(UserNotFoundThrowable.class)) {
-            return invalidateCookies(ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON), serverRequest)
-                .flatMap(bodyBuilder -> bodyBuilder.bodyValue(new LoginDeniedResponse()));
+                return invalidateCookies(ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON), serverRequest)
+                    .flatMap(bodyBuilder -> bodyBuilder.bodyValue(new LoginDeniedResponse()));
         }
 
         if (throwable.getClass().equals(DuplicateKeyException.class)) {

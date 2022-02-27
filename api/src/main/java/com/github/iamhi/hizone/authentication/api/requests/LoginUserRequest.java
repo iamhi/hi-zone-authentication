@@ -6,7 +6,8 @@ import java.util.Objects;
 
 public record LoginUserRequest(
     String username,
-    String password
+    String password,
+    boolean preventRedirect
 ) {
     public LoginUserRequest {
         Objects.requireNonNull(username);
@@ -14,6 +15,6 @@ public record LoginUserRequest(
     }
 
     public static LoginUserRequest fromFormData(MultiValueMap<String, String> formData) {
-        return new LoginUserRequest(formData.getFirst("username-input"), formData.getFirst("password-input"));
+        return new LoginUserRequest(formData.getFirst("username-input"), formData.getFirst("password-input"), false);
     }
 }

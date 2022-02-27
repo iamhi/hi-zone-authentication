@@ -14,4 +14,6 @@ public interface UserService {
     Mono<UserDTO> addAdminRole(String username, String otk, String buildTimeSecret);
 
     Mono<Boolean> hasRole(String username, String role);
+
+    Mono<Boolean> addRole(String username, String role);
 }

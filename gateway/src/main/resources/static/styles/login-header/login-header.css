@@ -10,6 +10,7 @@
 		width: 100%;
 		margin: 0em;
 		margin-top: 0.5em;
+		text-shadow: 2px 2px 0 var(--secondary-color-2), -2px -2px 0 var(--secondary-color-1);
 }
 
 .login-header__subtitle {
