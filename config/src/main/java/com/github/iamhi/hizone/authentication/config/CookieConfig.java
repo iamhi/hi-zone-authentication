@@ -12,4 +12,6 @@ public class CookieConfig {
     private String accessTokenPath;
 
     private String refreshTokenPath;
+
+    private boolean useHttpSecure;
 }
