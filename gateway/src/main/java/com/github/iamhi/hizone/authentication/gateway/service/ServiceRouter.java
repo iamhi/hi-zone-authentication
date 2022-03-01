@@ -19,6 +19,7 @@ public class ServiceRouter {
 
     @Bean
     public RouterFunction<ServerResponse> serviceRouterCompose(ServiceHandler serviceHandler) {
-        return route(POST(SERVICE_LOGIN_ROUTE).and(accept(MediaType.APPLICATION_JSON)), serviceHandler::login).and(route(POST(SERVICE_USER_INFO).and(accept(MediaType.APPLICATION_JSON)), serviceHandler::getUserInfo));
+        return route(POST(SERVICE_LOGIN_ROUTE).and(accept(MediaType.APPLICATION_JSON)), serviceHandler::login)
+            .and(route(POST(SERVICE_USER_INFO).and(accept(MediaType.APPLICATION_JSON)), serviceHandler::getUserInfo));
     }
 }

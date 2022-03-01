@@ -35,7 +35,7 @@ public record ServiceHandler(
         return serverRequest.bodyToMono(ServiceUserInfoRequest.class)
             .flatMap(serviceRequest -> Mono.zip(
                 getIfService(serviceRequest.token()),
-                Mono.just(serviceRequest.uuid())
+                tokenService.decodeToken(serviceRequest.userToken()).map(claims -> claims.get(TokenService.USER_UUID, String.class))
             ))
             .flatMap(requestTuple -> userService.findUser(requestTuple.getT2()))
             .flatMap(userDTO -> ServerResponse.ok().bodyValue(
