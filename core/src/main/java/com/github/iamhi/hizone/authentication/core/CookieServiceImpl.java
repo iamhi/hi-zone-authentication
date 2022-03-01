@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-
 import static com.github.iamhi.hizone.authentication.core.TokenService.ACCESS_TOKEN_EXPIRATION;
 import static com.github.iamhi.hizone.authentication.core.TokenService.REFRESH_TOKEN_EXPIRATION;
 
@@ -21,14 +19,10 @@ record CookieServiceImpl(
     CookieConfig cookieConfig
 ) implements CookieService {
 
-    private static final String USER_UUID = "uuid";
-    private static final String USER_USERNAME = "username";
-    private static final String USER_ROLES = "roles";
-
     @Override
     public Mono<ResponseCookie> createAccessCookie(UserDTO userDTO) {
         return tokenService
-            .createToken(getAccessTokenPayload(userDTO), ACCESS_TOKEN_EXPIRATION)
+            .createToken(tokenService.getAccessTokenPayload(userDTO), ACCESS_TOKEN_EXPIRATION)
             .map(this::createResponseAccessCookie);
     }
 
@@ -43,7 +37,7 @@ record CookieServiceImpl(
     @Override
     public Mono<ResponseCookie> createRefreshCookie(UserDTO userDTO) {
         return tokenService
-            .createToken(getRefreshTokenPayload(userDTO), REFRESH_TOKEN_EXPIRATION)
+            .createToken(tokenService.getRefreshTokenPayload(userDTO), REFRESH_TOKEN_EXPIRATION)
             .map(this::createResponseRefreshCookie);
     }
 
@@ -71,21 +65,7 @@ record CookieServiceImpl(
     }
 
     private String getUserUuidFromClaims(Claims claims) {
-        return claims.get(USER_UUID, String.class);
-    }
-
-    private Map<String, Object> getAccessTokenPayload(UserDTO userDTO) {
-        return Map.of(
-            USER_UUID, userDTO.uuid(),
-            USER_USERNAME, userDTO.username(),
-            USER_ROLES, userDTO.roles()
-        );
-    }
-
-    private Map<String, Object> getRefreshTokenPayload(UserDTO userDTO) {
-        return Map.of(
-            USER_UUID, userDTO.uuid()
-        );
+        return claims.get(TokenService.USER_UUID, String.class);
     }
 
     private ResponseCookie createResponseRefreshCookie(String token) {

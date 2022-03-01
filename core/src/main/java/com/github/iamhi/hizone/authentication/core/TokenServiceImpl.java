@@ -1,6 +1,7 @@
 package com.github.iamhi.hizone.authentication.core;
 
 import com.github.iamhi.hizone.authentication.config.TokenConfig;
+import com.github.iamhi.hizone.authentication.core.models.UserDTO;
 import com.github.iamhi.hizone.authentication.data.TokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -47,6 +48,21 @@ public record TokenServiceImpl(
     @Override
     public Mono<String> extendToken(String token, long lifeTime) {
         return tokenRepository.createToken(token, lifeTime);
+    }
+
+    @Override
+    public Map<String, Object> getAccessTokenPayload(UserDTO userDTO) {
+        return Map.of(
+            USER_UUID, userDTO.uuid(),
+            USER_USERNAME, userDTO.username(),
+            USER_ROLES, userDTO.roles()
+        );
+    }
+    @Override
+    public  Map<String, Object> getRefreshTokenPayload(UserDTO userDTO) {
+        return Map.of(
+            USER_UUID, userDTO.uuid()
+        );
     }
 
     private String encodeRefreshToken(Map<String, Object> payload, long lifeTime) {

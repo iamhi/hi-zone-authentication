@@ -3,6 +3,7 @@ package com.github.iamhi.hizone.authentication.gateway.shared;
 import com.github.iamhi.hizone.authentication.config.TokenConfig;
 import com.github.iamhi.hizone.authentication.core.CookieService;
 import com.github.iamhi.hizone.authentication.core.TokenService;
+import com.github.iamhi.hizone.authentication.core.UserService;
 import com.github.iamhi.hizone.authentication.core.models.UserDTO;
 import com.github.iamhi.hizone.authentication.core.models.UserRoleEnum;
 import org.springframework.http.HttpCookie;
@@ -18,7 +19,8 @@ import java.util.List;
 record SharedCookieHelperImpl(
     TokenService tokenService,
     CookieService cookieService,
-    TokenConfig tokenConfig
+    TokenConfig tokenConfig,
+    UserService userService
 ) implements SharedCookieHelper {
 
     @Override
@@ -55,6 +57,15 @@ record SharedCookieHelperImpl(
         return cookieService.getUserFromAccessToken(serverRequest.cookies())
             .flatMap(userDTO -> (userDTO.roles().contains(UserRoleEnum.valueOf(role)) ?
                 Mono.just(true) : Mono.error(new RuntimeException())));
+    }
+
+    @Override
+    public Mono<UserDTO> isRole(String accessToken, UserRoleEnum userRole) {
+        return tokenService.decodeToken(accessToken)
+            .map(claims -> claims.get(TokenService.USER_UUID, String.class))
+            .flatMap(userService::findUser)
+            .flatMap(userDTO ->
+                userDTO.roles().contains(userRole) ? Mono.just(userDTO) : Mono.error(new RuntimeException()));
     }
 
     public void invalidateTokens(MultiValueMap<String, HttpCookie> cookies) {
