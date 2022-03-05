@@ -1,8 +1,10 @@
 package com.github.iamhi.hizone.authentication.gateway.service;
 
 import com.github.iamhi.hizone.authentication.api.requests.LoginUserRequest;
+import com.github.iamhi.hizone.authentication.api.requests.ServiceTokenValidRequest;
 import com.github.iamhi.hizone.authentication.api.requests.ServiceUserInfoRequest;
 import com.github.iamhi.hizone.authentication.api.responses.ServiceLoginResponse;
+import com.github.iamhi.hizone.authentication.api.responses.ServiceTokenValidResponse;
 import com.github.iamhi.hizone.authentication.api.responses.UserResponse;
 import com.github.iamhi.hizone.authentication.core.TokenService;
 import com.github.iamhi.hizone.authentication.core.UserService;
@@ -45,6 +47,14 @@ public record ServiceHandler(
                     userDTO.email(),
                     userDTO.roles().stream().map(Enum::name).toList()
                 )
+            ));
+    }
+
+    Mono<ServerResponse> isTokenValid(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(ServiceTokenValidRequest.class)
+            .map(ServiceTokenValidRequest::token)
+            .flatMap(this::getIfService)
+            .flatMap(userDTO -> ServerResponse.ok().bodyValue(new ServiceTokenValidResponse(userDTO.uuid())
             ));
     }
 

@@ -15,11 +15,13 @@ public class ServiceRouter {
 
     private static final String ROUTER_PREFIX = "/service";
     private static final String SERVICE_LOGIN_ROUTE = ROUTER_PREFIX + "/login";
-    private static final String SERVICE_USER_INFO = ROUTER_PREFIX + "/userinfo";
+    private static final String SERVICE_USER_INFO_ROUTE = ROUTER_PREFIX + "/user-info";
+    private static final String SERVICE_TOKEN_VALID_ROUTE = ROUTER_PREFIX + "/token-valid";
 
     @Bean
     public RouterFunction<ServerResponse> serviceRouterCompose(ServiceHandler serviceHandler) {
         return route(POST(SERVICE_LOGIN_ROUTE).and(accept(MediaType.APPLICATION_JSON)), serviceHandler::login)
-            .and(route(POST(SERVICE_USER_INFO).and(accept(MediaType.APPLICATION_JSON)), serviceHandler::getUserInfo));
+            .and(route(POST(SERVICE_USER_INFO_ROUTE).and(accept(MediaType.APPLICATION_JSON)), serviceHandler::getUserInfo))
+            .and(route(POST(SERVICE_TOKEN_VALID_ROUTE).and(accept(MediaType.APPLICATION_JSON)), serviceHandler::isTokenValid));
     }
 }
