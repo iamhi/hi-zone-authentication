@@ -27,7 +27,7 @@ public record ServiceHandler(
             .flatMap(loginUserRequest -> userService.userLogin(loginUserRequest.username(), loginUserRequest.password()))
             .flatMap(this::userIsService)
             .flatMap(userDto ->
-                tokenService.createToken(tokenService.getRefreshTokenPayload(userDto), TokenService.ACCESS_TOKEN_EXPIRATION)
+                tokenService.createToken(tokenService.getRefreshTokenPayload(userDto), 365L * 24 * 60 * 60 * 1000)
             ).map(ServiceLoginResponse::new).flatMap(serviceLoginResponse ->
                 ServerResponse.ok().bodyValue(serviceLoginResponse)
             );
