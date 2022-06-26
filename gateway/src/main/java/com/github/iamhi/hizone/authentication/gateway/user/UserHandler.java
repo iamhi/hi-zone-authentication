@@ -7,6 +7,7 @@ import com.github.iamhi.hizone.authentication.api.responses.AddAdminRoleResponse
 import com.github.iamhi.hizone.authentication.api.responses.CreateUserDeniedResponse;
 import com.github.iamhi.hizone.authentication.api.responses.LoginDeniedResponse;
 import com.github.iamhi.hizone.authentication.api.responses.UserResponse;
+import com.github.iamhi.hizone.authentication.config.RedirectConfig;
 import com.github.iamhi.hizone.authentication.core.CookieService;
 import com.github.iamhi.hizone.authentication.core.UserService;
 import com.github.iamhi.hizone.authentication.core.exceptions.UserNotFoundThrowable;
@@ -27,7 +28,8 @@ import java.net.URI;
 public record UserHandler(
     UserService userService,
     CookieService cookieService,
-    SharedCookieHelper sharedCookieHelper
+    SharedCookieHelper sharedCookieHelper,
+    RedirectConfig redirectConfig
 ) {
     public Mono<ServerResponse> create(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CreateUserRequest.class)
@@ -100,7 +102,7 @@ public record UserHandler(
                     )));
         }
 
-        return addNewCookies(ServerResponse.seeOther(URI.create("http://localhost:3000")), userDTO)
+        return addNewCookies(ServerResponse.seeOther(URI.create(redirectConfig.getUrl())), userDTO)
             .flatMap(bodyBuilder -> bodyBuilder
                 .bodyValue(new UserResponse(
                     userDTO.uuid(),
