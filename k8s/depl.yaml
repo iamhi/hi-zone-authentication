@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hi-authentication-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hi-authentication
+  template:
+    metadata:
+      labels:
+        app: hi-authentication
+    spec:
+      containers:
+        - name: hi-authentication
+          image: localhost:5000/hi-authentication
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hi-authentication-srv
+spec:
+  selector:
+    app: hi-authentication
+  ports:
+    - name: hi-authentication
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hi-authentication-ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /hi-zone-api/authentication(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                  name: hi-authentication-srv
+                  port:
+                    number: 80
+---
+

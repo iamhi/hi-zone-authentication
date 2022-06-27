@@ -123,6 +123,9 @@ public record UserHandler(
                 .flatMap(bodyBuilder -> bodyBuilder.bodyValue(new CreateUserDeniedResponse()));
         }
 
+        System.out.println(throwable.getMessage());
+        throwable.printStackTrace();
+
         return invalidateCookies(
             ServerResponse
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
