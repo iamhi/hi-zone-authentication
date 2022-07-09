@@ -64,5 +64,17 @@
                 <finalName>hi-zone-authentication</finalName>
             </build>
         </profile>
-    </profiles>
+	<profile>
+		<id>local</id>
+		<activation>
+			<property>
+				<name>profile</name>
+				<value>local</value>
+			</property>
+		</activation>
+		<build>
+			<finalName>hi-zone-authentication-local</finalName>
+		</build>
+	</profile>
+</profiles>
 </project>
