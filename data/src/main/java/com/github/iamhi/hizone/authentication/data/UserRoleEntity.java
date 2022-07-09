@@ -4,17 +4,14 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table
-public record UserEntity(
+public record UserRoleEntity(
     @Column("uuid")
     String uuid,
 
+    @Column("name")
+    String name,
+
     @Column("username")
-    String username,
-
-    @Column("password")
-    String password,
-
-    @Column("email")
-    String email
+    String username
 ) {
 }

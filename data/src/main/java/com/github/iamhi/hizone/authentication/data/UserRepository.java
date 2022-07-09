@@ -1,11 +1,11 @@
 package com.github.iamhi.hizone.authentication.data;
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 
-@Repository
-public interface UserRepository extends ReactiveMongoRepository<UserEntity, String> {
+public interface UserRepository extends ReactiveCrudRepository<UserEntity, Integer> {
 
     Mono<UserEntity> findByUsername(String username);
+
+    Mono<UserEntity> findByUuid(String uuid);
 }

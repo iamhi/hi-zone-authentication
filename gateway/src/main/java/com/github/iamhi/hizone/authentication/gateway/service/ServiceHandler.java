@@ -21,13 +21,15 @@ public record ServiceHandler(
     TokenService tokenService
 ) {
 
+    private static final long serviceTokenExpirationTime = 365L * 24 * 60 * 60 * 1000;
+
     Mono<ServerResponse> login(ServerRequest serverRequest) {
         return serverRequest
             .bodyToMono(LoginUserRequest.class)
             .flatMap(loginUserRequest -> userService.userLogin(loginUserRequest.username(), loginUserRequest.password()))
             .flatMap(this::userIsService)
             .flatMap(userDto ->
-                tokenService.createToken(tokenService.getRefreshTokenPayload(userDto), 365L * 24 * 60 * 60 * 1000)
+                tokenService.createToken(tokenService.getRefreshTokenPayload(userDto), serviceTokenExpirationTime)
             ).map(ServiceLoginResponse::new).flatMap(serviceLoginResponse ->
                 ServerResponse.ok().bodyValue(serviceLoginResponse)
             );

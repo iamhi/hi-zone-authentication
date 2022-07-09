@@ -2,8 +2,8 @@ package com.github.iamhi.hizone.authentication.core.models;
 
 import com.github.iamhi.hizone.authentication.data.UserEntity;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public record UserDTO(
     String uuid,
@@ -19,7 +19,30 @@ public record UserDTO(
             userEntity.uuid(),
             userEntity.username(),
             userEntity.email(),
-            userEntity.roles().stream().map(UserRoleEnum::valueOf).toList()
+            new ArrayList<>() // TODO
+//            userEntity.roles().stream().map(UserRoleEnum::valueOf).toList()
+        );
+    }
+
+    public UserDTO addRole(UserRoleEnum role) {
+        List<UserRoleEnum> newRoles = this.roles();
+
+        newRoles.add(role);
+
+        return new UserDTO(
+            this.uuid,
+            this.username,
+            this.email,
+            newRoles
+        );
+    }
+
+    public UserDTO setRoles(List<UserRoleEnum> roles) {
+        return new UserDTO(
+            this.uuid,
+            this.username,
+            this.email,
+            roles
         );
     }
 }
