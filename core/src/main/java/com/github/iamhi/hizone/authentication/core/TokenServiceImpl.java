@@ -35,7 +35,11 @@ public record TokenServiceImpl(
 
     @Override
     public void invalidateToken(String token) {
-        tokenRepository.deleteToken(token).block();
+        try {
+            tokenRepository.deleteToken(token).block();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
