@@ -51,7 +51,7 @@ record CookieServiceImpl(
 
     @Override
     public Mono<String> getRefreshToken(MultiValueMap<String, HttpCookie> cookies) {
-        return Mono.justOrEmpty(cookies.getFirst(ACCESS_TOKEN_COOKIE_NAME)).map(HttpCookie::getValue);
+        return Mono.justOrEmpty(cookies.getFirst(REFRESH_TOKEN_COOKIE_NAME)).map(HttpCookie::getValue);
     }
 
     @Override

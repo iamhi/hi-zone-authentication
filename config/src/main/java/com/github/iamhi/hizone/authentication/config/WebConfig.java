@@ -2,6 +2,7 @@ package com.github.iamhi.hizone.authentication.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
@@ -9,6 +10,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@Profile("!local")
 public class WebConfig {
 
     @Bean
@@ -17,6 +19,7 @@ public class WebConfig {
         corsConfig.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8081"));
         corsConfig.setMaxAge(8000L);
         corsConfig.addAllowedMethod("GET");
+        corsConfig.addAllowedMethod("POST");
         corsConfig.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
