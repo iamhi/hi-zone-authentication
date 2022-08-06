@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface TokenService {
 
-    long REFRESH_TOKEN_EXPIRATION = (long) 1000 * 60 * 60 * 24 * 3;
+    long REFRESH_TOKEN_EXPIRATION = (long) 1000 * 60 * 60 * 24 * 30;
 
     long ACCESS_TOKEN_EXPIRATION = (long) 1000 * 60 * 30;
 
