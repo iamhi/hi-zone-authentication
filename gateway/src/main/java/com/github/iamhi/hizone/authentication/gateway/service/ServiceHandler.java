@@ -69,6 +69,6 @@ public record ServiceHandler(
 
     Mono<UserDTO> userIsService(UserDTO userDTO) {
         return userDTO.roles().contains(UserRoleEnum.SERVICE) ?
-            Mono.just(userDTO) : Mono.error(new RuntimeException());
+            Mono.just(userDTO) : Mono.error(new RuntimeException("User roles don't allow for this action"));
     }
 }

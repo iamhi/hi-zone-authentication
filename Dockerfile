@@ -17,7 +17,7 @@ COPY ./gateway ./gateway
 COPY ./service ./service
 
 # Compile the application.
-RUN mvn -Dmaven.test.skip=true package -P docker && cp service/target/hi-zone-authentication.jar app.jar
+RUN mvn -Dmaven.test.skip=true package && cp service/target/authentication-service-0.0.1-SNAPSHOT.jar app.jar
 
 #
 # Package stage
@@ -33,4 +33,4 @@ ENV VAULT_TOKEN "null"
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "-Dspring.profiles.active=docker", "/app/app.jar"]
+CMD ["java", "-jar", "/app/app.jar"]
